@@ -4,8 +4,8 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 
+const authRoute = require('./routes/auth');
 const userRoute = require('./routes/user');
-
 app.use(express.json());
 
 mongoose
@@ -19,10 +19,20 @@ mongoose
       console.log(`listening on http://localhost:${process.env.PORT}`);
     });
 
-    /*
-     * API ENDPOINT
-     */
+    //* API ENDPOINT
+    app.use('/api/auth', authRoute);
     app.use('/api/users', userRoute);
+    //* ERROR HANDLER
+    app.use((error, req, res, next) => {
+      if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+
+      const errorMessage = error.message;
+      res
+        .status(error.statusCode)
+        .json({ message: 'Something went wrong!', error: errorMessage });
+    });
   })
   .catch((e) => {
     console.log(e);
