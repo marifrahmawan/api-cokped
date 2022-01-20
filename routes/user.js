@@ -1,10 +1,13 @@
 const router = require('express').Router();
 const UserController = require('../controllers/User');
 const {
-  verifyToken,
   verifyTokenAndAuth,
+  verifyTokenAndAdmin,
 } = require('../middlewares/verify-token');
 
+router.get('/', verifyTokenAndAdmin, UserController.index);
+router.get('/find/:id', verifyTokenAndAdmin, UserController.getUser);
 router.put('/:id', verifyTokenAndAuth, UserController.update);
+router.delete('/:id', verifyTokenAndAdmin, UserController.delete);
 
 module.exports = router;

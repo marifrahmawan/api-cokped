@@ -28,7 +28,7 @@ const verifyToken = (req, res, next) => {
 
 const verifyTokenAndAuth = (req, res, next) => {
   verifyToken(req, res, () => {
-    if (req.user._id === req.params.id || req.user.isAdmin) {
+    if (req.user._id === req.params.id) {
       next();
     } else {
       const error = new Error('You are not allowed to do that!');
@@ -38,4 +38,16 @@ const verifyTokenAndAuth = (req, res, next) => {
   });
 };
 
-module.exports = { verifyToken, verifyTokenAndAuth };
+const verifyTokenAndAdmin = (req, res, next) => {
+  verifyToken(req, res, () => {
+    if (req.user.isAdmin) {
+      next();
+    } else {
+      const error = new Error('You are not allowed to do that!');
+      error.statusCode = 403;
+      throw error;
+    }
+  });
+};
+
+module.exports = { verifyToken, verifyTokenAndAuth, verifyTokenAndAdmin };
