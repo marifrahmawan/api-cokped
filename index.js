@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 
 const authRoute = require('./routes/auth');
 const userRoute = require('./routes/user');
+const productRoute = require('./routes/product');
 app.use(express.json());
 
 mongoose
@@ -22,6 +23,8 @@ mongoose
     //* API ENDPOINT
     app.use('/api/auth', authRoute);
     app.use('/api/users', userRoute);
+    app.use('/api/products', productRoute);
+
     //* ERROR HANDLER
     app.use((error, req, res, next) => {
       if (!error.statusCode) {

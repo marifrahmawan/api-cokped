@@ -2,8 +2,11 @@ const User = require('../models/User');
 const CryptoJS = require('crypto-js');
 
 exports.index = async (req, res, next) => {
+  const query = req.query.new;
   try {
-    const users = await User.find();
+    const users = query
+      ? await User.find().sort({ _id: -1 }).limit(5)
+      : await User.find();
 
     res.status(200).json(users);
   } catch (error) {
@@ -57,6 +60,35 @@ exports.delete = async (req, res, next) => {
     return res.status(200).json('User deleted');
   } catch (error) {
     error.statusCode = 500;
+    throw error;
+  }
+};
+
+exports.userStats = async (req, res, next) => {
+  const date = new Date();
+  const lastYear = new Date(date.setFullYear(date.getFullYear() - 1));
+
+  try {
+    const data = await User.aggregate([
+      {
+        $match: { createdAt: { $gte: lastYear } },
+      },
+      {
+        $project: {
+          month: { $month: '$createdAt' },
+        },
+      },
+      {
+        $group: {
+          _id: '$month',
+          total: { $sum: 1 },
+        },
+      },
+    ]);
+
+    res.status(200).json(data);
+  } catch (error) {
+    error.message = 'Something went wrong';
     throw error;
   }
 };

@@ -6,17 +6,20 @@ const verifyToken = (req, res, next) => {
 
   if (!authHeader) {
     const error = new Error('Token is not valid');
+    error.message = 'Token is not valid';
     error.statusCode = 403;
-  }
-
-  const token = authHeader.split(' ')[1];
-  try {
-    decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
-  } catch (error) {
     throw error;
   }
 
-  if (!decodedToken) {
+  try {
+    const token = authHeader.split(' ')[1];
+    decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
+  } catch (error) {
+    error.message = 'Token is not valid';
+    next(error);
+  }
+
+  if (decodedToken === null) {
     const error = new Error('Not authenticated');
     error.statusCode = 401;
     throw error;
@@ -40,6 +43,11 @@ const verifyTokenAndAuth = (req, res, next) => {
 
 const verifyTokenAndAdmin = (req, res, next) => {
   verifyToken(req, res, () => {
+    if (!req.user) {
+      const error = new Error('You are not allowed to do that!');
+      error.statusCode = 403;
+      throw error;
+    }
     if (req.user.isAdmin) {
       next();
     } else {
