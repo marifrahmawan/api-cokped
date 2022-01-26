@@ -6,7 +6,7 @@ const OrderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    prodcuts: [
+    products: [
       {
         productId: {
           type: String,
@@ -22,7 +22,7 @@ const OrderSchema = new mongoose.Schema(
       required: true,
     },
     address: {
-      type: Object,
+      type: String,
       required: true,
     },
     status: {

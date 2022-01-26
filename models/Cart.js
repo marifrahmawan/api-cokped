@@ -6,7 +6,7 @@ const CartSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    prodcuts: [
+    products: [
       {
         productId: {
           type: String,
