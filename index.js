@@ -9,7 +9,8 @@ const userRoute = require('./routes/user');
 const productRoute = require('./routes/product');
 const cartRoute = require('./routes/cart');
 const orderRoute = require('./routes/order');
-app.use(express.json());
+const stripeRoute = require('./routes/stripe');
+const cors = require('cors');
 
 mongoose
   .connect(process.env.MONGODB_URI, {
@@ -22,12 +23,15 @@ mongoose
       console.log(`listening on http://localhost:${process.env.PORT}`);
     });
 
+    app.use(cors());
+    app.use(express.json());
     //* API ENDPOINT
     app.use('/api/auth', authRoute);
     app.use('/api/users', userRoute);
     app.use('/api/products', productRoute);
     app.use('/api/carts', cartRoute);
     app.use('/api/orders', orderRoute);
+    app.use('/api/checkout', stripeRoute);
 
     //* ERROR HANDLER
     app.use((error, req, res, next) => {
