@@ -2,7 +2,11 @@ require('dotenv').config();
 
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const mongoose = require('mongoose');
+
+app.use(express.json());
+app.use(cors());
 
 const authRoute = require('./routes/auth');
 const userRoute = require('./routes/user');
@@ -10,7 +14,6 @@ const productRoute = require('./routes/product');
 const cartRoute = require('./routes/cart');
 const orderRoute = require('./routes/order');
 const stripeRoute = require('./routes/stripe');
-const cors = require('cors');
 
 mongoose
   .connect(process.env.MONGODB_URI, {
@@ -23,8 +26,6 @@ mongoose
       console.log(`listening on http://localhost:${process.env.PORT}`);
     });
 
-    app.use(cors());
-    app.use(express.json());
     //* API ENDPOINT
     app.use('/api/auth', authRoute);
     app.use('/api/users', userRoute);
