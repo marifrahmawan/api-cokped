@@ -8,7 +8,7 @@ exports.index = async (req, res, next) => {
     let products;
 
     if (qNew) {
-      products = await Product.find().sort({ createdAt: -1 }).limit(5);
+      products = await Product.find().sort({ createdAt: -1 }).limit(10);
     } else if (qCategory) {
       products = await Product.find({
         categories: {
@@ -45,7 +45,8 @@ exports.findProduct = async (req, res, next) => {
 
 exports.createProduct = async (req, res, next) => {
   try {
-    const { title, desc, img, categories, size, color, price } = req.body;
+    const { title, desc, img, categories, size, color, price, instock } =
+      req.body;
     const newProduct = new Product({
       title,
       desc,
@@ -54,6 +55,7 @@ exports.createProduct = async (req, res, next) => {
       size,
       color,
       price,
+      instock,
     });
 
     await newProduct.save();

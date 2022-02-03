@@ -15,15 +15,15 @@ const ProductSchema = new mongoose.Schema(
       required: true,
     },
     categories: [],
-    size: {
-      type: String,
-    },
-    color: {
-      type: String,
-    },
+    size: [],
+    color: [],
     price: {
       type: Number,
       required: true,
+    },
+    instock: {
+      type: Boolean,
+      default: true,
     },
   },
   { timestamps: true }
