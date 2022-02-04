@@ -37,7 +37,7 @@ exports.findProduct = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id);
 
-    res.status(500).json(product);
+    res.status(200).json(product);
   } catch (error) {
     throw error;
   }
