@@ -1,43 +1,23 @@
-const Cart = require('../models/Cart');
-
-exports.index = async (req, res, next) => {
-  try {
-    const userCarts = await Cart.find();
-
-    res.status(200).json(userCarts);
-  } catch (error) {
-    throw error;
-  }
-};
+const User = require("../models/User");
 
 exports.findCart = async (req, res, next) => {
   try {
-    const cart = await Cart.findOne({ userId: req.params.userId });
+    const cart = await User.findById(req.params.userId).populate(
+      "cart.products.productId"
+    );
 
-    res.status(500).json(cart);
+    res.status(200).json(cart);
   } catch (error) {
     throw error;
-  }
-};
-
-exports.createCart = async (req, res, next) => {
-  try {
-    const newCart = new Cart(req.body);
-
-    await newCart.save();
-    res.status(200).json(newCart);
-  } catch (error) {
-    error.message = 'Something went wrong!';
-    next(error);
   }
 };
 
 exports.updateCart = async (req, res, next) => {
   try {
-    const updatedCart = await Cart.findByIdAndUpdate(
-      req.params.id,
+    const updatedCart = await User.findByIdAndUpdate(
+      req.params.userId,
       {
-        $set: req.body,
+        cart: req.body,
       },
       { new: true }
     );
@@ -48,11 +28,28 @@ exports.updateCart = async (req, res, next) => {
   }
 };
 
-exports.deleteCart = async (req, res, next) => {
-  try {
-    await Cart.findByIdAndDelete(req.params.id);
+exports.removeFromCart = async (req, res, next) => {
+  const { cartProductId } = req.body;
+  let updatedUserCart;
 
-    res.status(200).json('Cart deleted');
+  const userCart = await User.findById(req.params.userId);
+
+  updatedUserCart = userCart.cart.products.filter(
+    (item) => item?._id.toString() !== cartProductId?.toString()
+  );
+
+  const newUserCart = await User.findByIdAndUpdate(
+    req.params.userId,
+    {
+      cart: updatedUserCart,
+    },
+    {
+      new: true,
+    }
+  );
+
+  try {
+    res.status(200).json(newUserCart);
   } catch (error) {
     throw error;
   }

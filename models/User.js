@@ -1,6 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-const UserSchema = new mongoose.Schema(
+const UserSchema = new Schema(
   {
     username: {
       type: String,
@@ -16,6 +17,37 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    cart: {
+      products: [
+        {
+          productId: {
+            type: Schema.Types.ObjectId,
+            ref: "Product",
+          },
+          price: {
+            type: Number,
+          },
+          quantity: {
+            type: Number,
+            default: 0,
+          },
+          colorChoice: {
+            type: String,
+          },
+          sizeChoice: {
+            type: String,
+          },
+        },
+      ],
+      totalQuantity: {
+        type: Number,
+      },
+      totalPrice: {
+        type: Number,
+      },
+    },
+    wishlist: [],
+    order: [],
     isAdmin: {
       type: Boolean,
       default: false,
@@ -24,4 +56,4 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model("User", UserSchema);
